@@ -240,7 +240,7 @@ h1 { margin: 0; font-size: clamp(30px, 4vw, 42px); line-height: 1.25; letter-spa
   cursor: grab;
   background:
     linear-gradient(#ffe8c240, #ffe8c240),
-    #ac805b url("./images/bgb-strategy/bgb-sand.png") center / cover;
+    #ac805b url("./images/bgb-strategy/bgb-sand.png") center / var(--strategy-background-size, cover) repeat;
 }
 .strategy-selection { position: absolute; width: var(--cell-size); height: var(--cell-size); border: 2px solid #fff2af; background: #ffdf851c; box-shadow: 0 0 8px 2px #ffd87a9c, inset 0 0 5px #ffdc88; pointer-events: none; }
 .strategy-selection::before, .strategy-selection::after { content: ''; position: absolute; }
