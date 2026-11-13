@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plan BGB tower layouts for Dark War: Survival." data-ko-content="다크워 서바이벌의 BGB 전략을 설계하는 도구입니다.">
+  <meta name="theme-color" content="#16705b">
+  <title data-ko-text="BGB 전략 설계">BGB Strategy Planner</title>
+  <link rel="icon" type="image/png" href="./images/favicon.png">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./language.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="page-shell site-header-inner">
+      <div class="brand"><img class="brand-icon" src="./images/favicon.png" alt="" width="38" height="38"><span>Dark War:Survival <strong>[CBH]</strong></span></div>
+      <select id="site-language" class="site-language" aria-label="Language" data-ko-aria-label="언어">
+        <option value="ko" lang="ko">KO</option>
+        <option value="en" lang="en" selected>EN</option>
+      </select>
+      <nav class="site-nav" aria-label="Site navigation" data-ko-aria-label="페이지 이동">
+        <a href="./index.html" data-ko-text="BGB 인원 선발">BGB Player Selection</a>
+        <a href="./strategy.html" aria-current="page" data-ko-text="BGB 전략 설계">BGB Strategy Planner</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-shell strategy-page">
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">DARK WAR: SURVIVAL</p>
+        <h1 id="page-title"><span data-ko-text="BGB 전략 설계">BGB Strategy Planner</span><span class="title-dot">.</span></h1>
+        <p class="intro-description" data-ko-text="다크워 서바이벌 BGB 전략을 준비하는 공간입니다.">Plan your BGB strategy for Dark War: Survival.</p>
+      </section>
+
+      <details class="strategy-guide">
+        <summary><strong data-ko-text="사용 방법">How to use</strong></summary>
+        <ul>
+          <li><strong data-ko-text="마우스">Mouse</strong> <span data-ko-text="드래그하거나 스페이스바를 누른 채 드래그하면 지도가 이동합니다. Ctrl/⌘를 누른 채 휠을 굴리면 확대·축소됩니다.">Drag the map or hold Space while dragging. Hold Ctrl or ⌘ and scroll to zoom.</span></li>
+          <li><strong data-ko-text="터치">Touch</strong> <span data-ko-text="두 손가락을 같은 방향으로 드래그하거나 스페이스바를 누른 채 한 손가락으로 드래그하면 지도가 이동합니다. 두 손가락을 벌리거나 오므리면 확대·축소됩니다.">Drag with two fingers, or hold Space and drag with one finger, to move the map. Pinch to zoom.</span></li>
+          <li><strong data-ko-text="타워 이동">Move a tower</strong> <span data-ko-text="타워와 목적지를 차례로 선택한 뒤 확인 버튼을 누르세요.">Select a tower, choose a destination, then press the check button to move.</span></li>
+          <li><strong data-ko-text="이름 변경">Rename a tower</strong> <span data-ko-text="타워를 더블클릭하거나 두 번 탭해 이름을 바꾸세요.">Double-click or double-tap a tower to rename it.</span> <button id="strategy-reset-names" type="button" data-ko-text="타워 이름 초기화" disabled>Reset Tower Names</button></li>
+          <li><strong data-ko-text="배치 저장">Save a layout</strong> <span data-ko-text="재생을 끈 상태에서 타워를 이동한 뒤 시간 버튼을 누르면 위치가 저장됩니다.">With Play off, move a tower and select a time button to save the positions.</span></li>
+          <li><strong data-ko-text="배치 재생">Play a saved layout</strong> <span data-ko-text="재생을 켜고 시간 버튼을 누르면 타워가 저장된 위치로 이동합니다.">Turn on Play and select a time button to move the towers to their saved positions.</span></li>
+          <li><strong data-ko-text="초기화">Reset</strong> <span data-ko-text="초기화를 누르면 타워가 시작 위치로 돌아가고, 저장된 배치가 모두 삭제되며 재생이 꺼집니다.">Press Reset to return towers to their starting positions, delete all saved layouts, and turn off Play.</span></li>
+        </ul>
+      </details>
+
+      <section class="panel strategy-board" aria-label="Strategy canvas" data-ko-aria-label="전략 캔버스">
+        <div id="strategy-map" class="strategy-map">
+          <div id="strategy-move-status" class="strategy-move-status" role="status" data-ko-text="이동할 수 없는 위치입니다." hidden>You can’t move to this location.</div>
+          <div id="strategy-save-status" class="strategy-move-status" role="status" data-ko-text="타워를 이동한 후 저장해 주세요." hidden>Move a tower before saving.</div>
+          <div id="strategy-base-info" class="strategy-base-info" hidden>
+            <img src="./images/bgb-strategy/industry-plant-no-shadow.png" width="32" height="32" alt="">
+            <span id="strategy-base-info-name" aria-live="polite"></span>
+            <button id="strategy-base-info-clear" type="button" aria-label="Clear tower selection" data-ko-aria-label="타워 선택 해제">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="m9 9 6 6m0-6-6 6" stroke-linecap="round"></path>
+              </svg>
+            </button>
+          </div>
+          <div id="strategy-record-controls" class="strategy-record-controls" role="group" aria-label="Layout recording" data-ko-aria-label="전략 배치 기록">
+            <button id="strategy-play" type="button" aria-pressed="false" data-ko-text="재생" disabled>Play</button>
+            <button type="button" data-minute="0" data-ko-text="0분">0m</button>
+            <button type="button" data-minute="5" data-ko-text="5분">5m</button>
+            <button type="button" data-minute="15" data-ko-text="15분">15m</button>
+            <button type="button" data-minute="25" data-ko-text="25분">25m</button>
+            <button id="strategy-record-reset" type="button" data-ko-text="초기화">Reset</button>
+          </div>
+          <div class="strategy-zoom" role="group" aria-label="Map zoom" data-ko-aria-label="전장 확대 및 축소">
+            <button id="strategy-zoom-out" type="button" aria-label="Zoom out" data-ko-aria-label="축소">−</button>
+            <output id="strategy-zoom-level" aria-label="Current zoom" data-ko-aria-label="현재 확대율"></output>
+            <button id="strategy-zoom-in" type="button" aria-label="Zoom in" data-ko-aria-label="확대">+</button>
+            <button id="strategy-fullscreen" type="button" aria-label="Fullscreen" data-ko-aria-label="전체화면" aria-pressed="false" hidden>⛶</button>
+          </div>
+          <div id="strategy-viewport" class="strategy-viewport" tabindex="0" role="region" aria-label="Battlefield map" data-ko-aria-label="전장 지도">
+            <div class="strategy-surface">
+              <canvas id="strategy-canvas" class="strategy-canvas" width="1200" height="1200" aria-label="BGB strategy map" data-ko-aria-label="BGB 전략 지도">
+                <span data-ko-text="이 브라우저는 캔버스를 지원하지 않습니다.">This browser does not support canvas.</span>
+              </canvas>
+              <div class="strategy-territory strategy-territory-blue">
+                <div class="strategy-hq" role="img" aria-label="Blue Team Headquarters" data-ko-aria-label="청팀 본부 건물"><span class="strategy-building-name" data-ko-text="본부 건물">Headquarters</span></div>
+              </div>
+              <div class="strategy-territory strategy-territory-red">
+                <div class="strategy-hq" role="img" aria-label="Red Team Headquarters" data-ko-aria-label="홍팀 본부 건물"><span class="strategy-building-name" data-ko-text="본부 건물">Headquarters</span></div>
+              </div>
+              <div class="strategy-facility strategy-military strategy-military-northwest">
+                <div class="strategy-facility-image" role="img" aria-label="Northwest Military Base" data-ko-aria-label="좌상단 군사 기지"><span class="strategy-building-name" data-ko-text="군사 기지">Military Base</span></div>
+              </div>
+              <div class="strategy-facility strategy-military strategy-military-southeast">
+                <div class="strategy-facility-image" role="img" aria-label="Southeast Military Base" data-ko-aria-label="우하단 군사 기지"><span class="strategy-building-name" data-ko-text="군사 기지">Military Base</span></div>
+              </div>
+              <div class="strategy-facility strategy-hospital strategy-hospital-north">
+                <div class="strategy-facility-image" role="img" aria-label="Northern Field Hospital" data-ko-aria-label="상단 의료 센터"><span class="strategy-building-name" data-ko-text="의료 센터">Field Hospital</span></div>
+              </div>
+              <div class="strategy-facility strategy-hospital strategy-hospital-south">
+                <div class="strategy-facility-image" role="img" aria-label="Southern Field Hospital" data-ko-aria-label="하단 의료 센터"><span class="strategy-building-name" data-ko-text="의료 센터">Field Hospital</span></div>
+              </div>
+              <div class="strategy-facility strategy-refinery" style="--x: 39.5; --y: 110.5"><div class="strategy-facility-image" role="img" aria-label="Northwest Oil Refinery" data-ko-aria-label="왼쪽 위 정유 기지"><span class="strategy-building-name" data-ko-text="정유 기지">Oil Refinery</span></div></div>
+              <div class="strategy-facility strategy-refinery" style="--x: 110.5; --y: 110.5"><div class="strategy-facility-image" role="img" aria-label="Northeast Oil Refinery" data-ko-aria-label="오른쪽 위 정유 기지"><span class="strategy-building-name" data-ko-text="정유 기지">Oil Refinery</span></div></div>
+              <div class="strategy-facility strategy-refinery" style="--x: 7.5; --y: 74.5"><div class="strategy-facility-image" role="img" aria-label="Western Oil Refinery" data-ko-aria-label="왼쪽 정유 기지"><span class="strategy-building-name" data-ko-text="정유 기지">Oil Refinery</span></div></div>
+              <div class="strategy-facility strategy-refinery" style="--x: 142.5; --y: 74.5"><div class="strategy-facility-image" role="img" aria-label="Eastern Oil Refinery" data-ko-aria-label="오른쪽 정유 기지"><span class="strategy-building-name" data-ko-text="정유 기지">Oil Refinery</span></div></div>
+              <div class="strategy-facility strategy-refinery" style="--x: 39.5; --y: 39.5"><div class="strategy-facility-image" role="img" aria-label="Southwest Oil Refinery" data-ko-aria-label="왼쪽 아래 정유 기지"><span class="strategy-building-name" data-ko-text="정유 기지">Oil Refinery</span></div></div>
+              <div class="strategy-facility strategy-refinery" style="--x: 110.5; --y: 39.5"><div class="strategy-facility-image" role="img" aria-label="Southeast Oil Refinery" data-ko-aria-label="오른쪽 아래 정유 기지"><span class="strategy-building-name" data-ko-text="정유 기지">Oil Refinery</span></div></div>
+              <div class="strategy-facility strategy-rare-earth"><div class="strategy-facility-image" role="img" aria-label="Rare Earth Factory" data-ko-aria-label="희토류 공장"><span class="strategy-building-name" data-ko-text="희토류 공장">Rare Earth Factory</span></div></div>
+              <div id="strategy-selection" class="strategy-selection" aria-hidden="true" hidden></div>
+              <div id="strategy-move-preview" class="strategy-move-preview" hidden>
+                <div class="strategy-move-actions">
+                  <button id="strategy-move-cancel" type="button" aria-label="Cancel move" data-ko-aria-label="이동 취소">×</button>
+                  <button id="strategy-move-confirm" type="button" aria-label="Confirm move" data-ko-aria-label="이동 확정">✓</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="strategy-minimap-controls">
+            <button id="strategy-minimap-toggle" class="strategy-minimap-toggle" type="button" aria-controls="strategy-minimap" aria-expanded="true" aria-label="Hide minimap" data-ko-aria-label="미니맵 접기">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" width="24" height="24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/>
+              </svg>
+            </button>
+            <div id="strategy-minimap" class="strategy-minimap" role="img" aria-label="Minimap showing bases, fixed buildings, and the current view" data-ko-aria-label="본진 영역, 고정 건물, 현재 시야를 보여주는 미니맵">
+              <div id="strategy-minimap-markers" class="strategy-minimap-markers" aria-hidden="true"></div>
+              <div id="strategy-minimap-view" class="strategy-minimap-view"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </div>
+  <footer class="site-footer">
+    <div class="page-shell site-footer-inner">Dark War:Survival [CBH]<br><span class="creator-credit" data-ko-text="제작 · #377 CBH 별star">Created by #377 CBH 별star</span></div>
+  </footer>
+  <script defer src="./strategy.js"></script>
+</body>
+</html>
