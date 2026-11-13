@@ -104,9 +104,6 @@ function savePosition() {
 
 function sizeMap() {
   surface.style.width = `${cellCount / visibleColumnsAt100Percent * zoom}%`;
-  const viewportWidth = viewport.clientWidth || window.innerWidth || 1;
-  const backgroundSize = viewportWidth * cellCount / visibleColumnsAt100Percent * minZoom / 100;
-  surface.style.setProperty('--strategy-background-size', `${backgroundSize}px`);
   zoomLevel.value = `${Math.round(100 * zoomProgress())}%`;
   zoomOut.disabled = zoom === minZoom;
   zoomIn.disabled = zoom === maxZoom;
